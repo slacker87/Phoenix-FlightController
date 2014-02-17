@@ -70,3 +70,21 @@ Command-line arguments:  -os linux -ws gtk -arch x86
 
 !ENTRY org.eclipse.cdt.core 1 0 2014-02-12 18:00:44.270
 !MESSAGE Indexed 'Phoenix-FlightController' (2 sources, 35 headers) in 1,35 sec: 874 declarations; 3.554 references; 0 unresolved inclusions; 11 syntax errors; 1.643 unresolved names (27,06 %)
+!SESSION 2014-02-15 13:58:12.359 -----------------------------------------------
+eclipse.buildId=debbuild
+java.version=1.7.0_51
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=de_DE
+Command-line arguments:  -os linux -ws gtk -arch x86
+
+!ENTRY org.eclipse.core.resources 2 10035 2014-02-15 13:58:16.280
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+!SESSION 2014-02-17 18:21:08.646 -----------------------------------------------
+eclipse.buildId=debbuild
+java.version=1.7.0_51
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=de_DE
+Command-line arguments:  -os linux -ws gtk -arch x86
+
+!ENTRY org.eclipse.core.jobs 2 2 2014-02-17 19:36:34.726
+!MESSAGE Job found still running after platform shutdown.  Jobs should be canceled by the plugin that scheduled them during shutdown: org.eclipse.search2.internal.ui.InternalSearchUI$InternalSearchJob
