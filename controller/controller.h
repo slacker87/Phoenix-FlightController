@@ -66,3 +66,10 @@ int16_t throttle = 1000;
 
 // Custom definitions
 //#define DISPLAY_ITTERATIONS
+
+// Some variables for debugging statistics etc
+uint32_t loopTimeSensor = 0;
+uint32_t loopTimeTask = 0;
+uint32_t cntSensor=0;
+uint32_t cntTask=0;
+float meanMag;

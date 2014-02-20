@@ -1,4 +1,4 @@
-/*
+/* 
     Phoenix flight controller was initially build to support only one array of sensors but
     with minor sensor changes it seemed like a waste to just "drop" previous sensor support
     with this idea in mind i will try to make the flight controller feature set flexible as
@@ -21,9 +21,54 @@
 #include "dataStorage.h"
 
 // == Hardware setup/s == 
-#define PHOENIX_SHIELD_V_01
+#define NO_SHIELD_V1
+//#define PHOENIX_SHIELD_V_01
 //#define AQ_SHIELD_V_20
 //#define AQ_SHIELD_V_21
+
+#ifdef NO_SHIELD_V1
+    // Led defines
+    #define LED_WHITE 2
+    //#define LED_BLUE 4
+    #define LED_ARDUINO 13
+
+    //#define DISPLAY_ITTERATIONS    
+    // Features requested
+    #define Magnetometer
+    #define AltitudeHoldBaro
+    //#define BatteryMonitorCurrent
+    //#define GPS
+    //#define YawByMag
+    
+    // Critical sensors on board (gyro/accel)
+    //#include <mpu6050_6DOF_stick_px01.h>
+    #include <mpu6050_10DOF_stick_px01.h>
+    
+    // Magnetometer
+    #include <Magnetometer_HMC5883L.h>
+    
+    // Barometer
+    #include <Barometer_ms5611.h>
+    
+    // GPS (ublox neo 6m)
+    //#include <GPS_ublox.h>
+    
+    // Current sensor
+    //#include <BatteryMonitor_current.h>
+    
+    // Kinematics used
+    #include <kinematics_CMP.h>
+    
+    // Receiver
+    #include <Receiver_teensy3_HW_SUMD.h>
+    
+    // Frame type definition
+    #include <FrameType_QuadX.h> 
+
+    // Motor / ESC setup
+    #define ESC_400HZ
+    #include <ESC_teensy3_HW2.h>     
+#endif
 
 #ifdef PHOENIX_SHIELD_V_01
     // Led defines
@@ -195,6 +240,10 @@ void setup() {
     I2C0_F = 0x00; // 2.4 MHz (prescaler 20)
     I2C0_FLT = 4;
 #endif
+#if defined(__MK20DX256__)
+    I2C0_F = 0x00; // 2.4 MHz (prescaler 20)
+    I2C0_FLT = 4;
+#endif
     
 #if defined(__AVR__)
     TWBR = 12; // 400 KHz (maximum supported frequency)
@@ -249,6 +298,9 @@ void setup() {
     gps.initializeBaseStation();
 #endif
     
+    sensorPreviousTime = 0;
+    previousTime = 0;
+
     // All is ready, start the loop
     all_ready = true;
 }
@@ -264,7 +316,7 @@ void loop() {
     currentTime = micros();
     
     // Read data (not faster then every 1 ms)
-    if (currentTime - sensorPreviousTime >= 1000) {
+    if (currentTime - sensorPreviousTime >= 1000) {		// needs typ 0.175ms (1.75ms with no __MK20DX256__ set)
         sensors.readGyroSum();
         sensors.readAccelSum();        
         
@@ -272,12 +324,14 @@ void loop() {
         // Bring sonar pin down (complete TLL trigger pulse)
         readSonarFinish();
 #endif    
-        
+loopTimeSensor += micros() - currentTime;
+cntSensor++;
+
         sensorPreviousTime = currentTime;
     }    
     
     // 100 Hz task loop (10 ms)
-    if (currentTime - previousTime > 10000) {
+    if (currentTime - previousTime > 10000) {		// needs typ 0.730ms (4ms with no __MK20DX256__ set)
         frameCounter++;
         
         process100HzTask();
@@ -301,7 +355,10 @@ void loop() {
         if (frameCounter >= 100) {
             frameCounter = 0;
         }
-        
+
+        loopTimeTask += micros() - currentTime;
+        cntTask++;
+
         previousTime = currentTime;
     }
 }
@@ -325,14 +382,24 @@ void process100HzTask() {
     // Update kinematics with latest data
     kinematics_update(gyro[XAXIS], gyro[YAXIS], gyro[ZAXIS], accel[XAXIS], accel[YAXIS], accel[ZAXIS]);
     
-    // Update heading
-    headingError = kinematicsAngle[ZAXIS] - commandYawAttitude;
-    NORMALIZE(headingError); // +- PI
-    
     // Update PIDs according the selected mode
     if (flightMode == ATTITUDE_MODE) {
         // Compute command PIDs (with kinematics correction)
-        yaw_command_pid.Compute();
+        // yaw calculation does not depend on ACC, so it should be handled as 
+        // in RATE_MODE. Exception: magnetometer based heading.
+#ifdef YawByMag
+        // Update heading
+        //headingError = kinematicsAngle[ZAXIS] - commandYawAttitude;
+        headingError = magHeadingAbsolute - commandYawAttitude;
+        // magHeadingAbsolute needs strong filtering
+        NORMALIZE(headingError); // +- PI
+    	yaw_command_pid.Compute();
+#else
+        headingError = kinematicsAngle[ZAXIS] - commandYawAttitude;
+        NORMALIZE(headingError); // +- PI
+    	yaw_command_pid.Compute();
+        //YawCommandPIDSpeed = commandYaw * 4.0;  // see the comment above
+#endif
         pitch_command_pid.Compute();
         roll_command_pid.Compute();
     } else if (flightMode == RATE_MODE) {
@@ -362,6 +429,11 @@ void process100HzTask() {
 }
 
 void process50HzTask() {
+
+#ifdef SUMD_IS_ACTIVE  
+    ReceiverReadPacket(); // dab 2014-02-01: non interrupt controlled receiver reading  
+#endif
+
     processPilotCommands();
     
 #ifdef AltitudeHoldBaro
@@ -392,10 +464,11 @@ void process10HzTask() {
     // Request sonar reading
     readSonar();
 #endif    
-    
+
 #ifdef Magnetometer
     sensors.readMag();
     sensors.evaluateMag();
+    meanMag = filterSmooth(magHeadingAbsolute, meanMag, 0.2f);
 #endif
     
 #ifdef BatteryMonitorCurrent
@@ -424,4 +497,20 @@ void process1HzTask() {
         digitalWrite(LED_BLUE, LOW);
     }
 #endif
+
+    // A LED Stripe take 20 x 40us = 0.8ms time to update, no interrupts (only used by sonar)
+
+    // Mag problem eg. 1.0 with stopped motors and 1.6 with full speed: +34 Degree ...
+    // Linear, reproduceable, throttle correction?
+    //Serial.print( magHeadingAbsolute );
+    //Serial.print( " \t" );
+    //Serial.println( meanMag );
+
+    //Serial.print( loopTimeSensor / cntSensor );
+    //Serial.print( " \t" );
+    //Serial.println( loopTimeTask / cntTask );
+
+    loopTimeSensor = loopTimeTask = 0;
+    cntTask = cntSensor = 0;
+
 }

@@ -14,6 +14,11 @@
 
 #if defined(__MK20DX128__)
     #define EEPROM_SIZE 512
+#endif
+
+/*ToDo: check the real size for the MK20DX256 */
+#if defined(__MK20DX256__)
+    #define EEPROM_SIZE 512
 #endif    
 
 #define EEPROM_VERSION 5

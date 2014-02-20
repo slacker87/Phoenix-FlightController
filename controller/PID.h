@@ -21,9 +21,9 @@ class PID {
         };
         
         PID(float* Input, float* Output, float* Setpoint, float* terms) {
-            previous_error = 0.0;
             integral = 0.0;
-            
+            last_PID_input = 0.0;
+
             PID_input = Input;
             PID_output = Output;
             PID_setpoint = Setpoint;
@@ -35,16 +35,21 @@ class PID {
             windupGuard = &terms[WG];        
         };
         
-        void Compute() {            
+        void Compute() {       
+            float derivative = 0.0;
             unsigned long now = micros();
             float delta_time = (now - last_time) / 1000000.0;
             float error = *PID_setpoint - *PID_input;
             integral = constrain(integral + error * delta_time, -*windupGuard, *windupGuard);
-            float derivative = (*PID_input - previous_error) / delta_time;
+
+    	    if( delta_time > 0.0 )
+    	    {
+    	    	derivative = (*PID_input - last_PID_input) / delta_time; // wrong - derivative must be 0 for const input
+    	    }
             
-            *PID_output = *Kp * error + *Ki * integral + *Kd * derivative;
+            *PID_output = (*Kp * error) + (*Ki * integral) + (*Kd * derivative);
             
-            previous_error = *PID_input;
+            last_PID_input = *PID_input;
             last_time = now;
         };
         
@@ -60,7 +65,7 @@ class PID {
         float *Kp, *Ki, *Kd;
         float *windupGuard;
         
-        float previous_error;
         float integral;
+        float last_PID_input;
         unsigned long last_time;
 }; 
