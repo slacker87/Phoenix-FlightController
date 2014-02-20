@@ -1,12 +1,12 @@
-Flight Controller based on K20DX128 (Teensy 3.0)
+Flight Controller based on K20DX256 (Teensy 3.1)
 ------------------------------------------------
 
-PIN setup (Teensy 3.0 pin numbering)
+PIN setup (Teensy 3.1 pin numbering)
 ------------------------------------
   - I2C SCL 19
   - I2C SDA 18
   
-  - PPM in (receiver) 3
+  - SUMD in (receiver) 0
   
   - Rotor 1 22
   - Rotor 2 23
@@ -32,7 +32,7 @@ Filters, kinematics, data handling
     - Rate (ACRO) | gyro only
     - Attitude | gyro with accel corrections
     - Altitute hold | barometer or sonar
-  - Pilot commands are being read by PPM sampling code via single PIN (with HW timer), both PPM and PWM in is supported
+  - Pilot commands are being read via single PIN (with HW timer or USART), PPM, PWM and SUMD in is supported
   - Stabilization and pilot commands are mixed together by 2 separate PID controllers
     - First (only used in attitude mode) mixes pilot commands with kinematics output
     - Second (used in both attitude and rate mode) mixes output from first PID or raw stick input with gyroRate output
