@@ -30,9 +30,10 @@
 #define PSP_SET_MAG_CALIBRATION   104
 #define PSP_SET_MOTOR_TEST_VALUE  105
 
-#define PSP_INF_ACK      201
-#define PSP_INF_REFUSED  202
-#define PSP_INF_CRC_FAIL 203
+#define PSP_INF_ACK           201
+#define PSP_INF_REFUSED       202
+#define PSP_INF_CRC_FAIL      203
+#define PSP_INF_DATA_TOO_LONG 204
 
 
 class Configurator {
@@ -79,6 +80,15 @@ class Configurator {
                         message_crc ^= data;
                         
                         state++;
+                        
+                        if (payload_length_expected > sizeof(data_buffer)) {
+                            // Message too long, we won't accept
+                            protocol_head(PSP_INF_DATA_TOO_LONG, 1);
+                            serialize_uint8(0x01);
+                            protocol_tail();
+                            
+                            state = 0; // Restart
+                        }
                         break;
                     case 5:
                         data_buffer[payload_length_received] = data;
@@ -338,7 +348,7 @@ class Configurator {
         uint16_t payload_length_expected;
         uint16_t payload_length_received;
         
-        uint8_t data_buffer[200];
+        uint8_t data_buffer[256];
 } configurator;
 
 void readSerial() {

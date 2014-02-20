@@ -20,13 +20,13 @@ var PSP = {
     PSP_SET_MAG_CALIBRATION:   104,
     PSP_SET_MOTOR_TEST_VALUE:  105,
     
-    PSP_INF_ACK:      201,
-    PSP_INF_REFUSED:  202,
-    PSP_INF_CRC_FAIL: 203
+    PSP_INF_ACK:       201,
+    PSP_INF_REFUSED:   202,
+    PSP_INF_CRC_FAIL:  203,
+    PSP_INF_DATA_TOO_LONG: 204
 };
 
 var packet_state = 0;
-var command_buffer = new Array();
 var command;
 
 var message_length_expected = 0;
@@ -37,7 +37,7 @@ var message_crc = 0;
 var char_counter = 0;
 
 function onCharRead(readInfo) {
-    if (readInfo && readInfo.bytesRead > 0 && readInfo.data) {
+    if (readInfo && readInfo.bytesRead > 0) {
         var data = new Uint8Array(readInfo.data);
         
         for (var i = 0; i < data.length; i++) {
@@ -279,6 +279,9 @@ function process_data(command, message_buffer) {
             break;
         case PSP.PSP_INF_CRC_FAIL:
             console.log('crc check failed, code: ' + message_buffer_uint8_view[0] + ' crc value: ' + message_buffer_uint8_view[1]);
+            break;
+        case PSP.PSP_INF_DATA_TOO_LONG:
+            console.log('Flight Controller - Message too long (shorter the message or increase buffer size) !!!');
             break;
         default:
             console.log('Unknown command: ' + command);
