@@ -1,23 +1,35 @@
-Flight Controller based on K20DX256 (Teensy 3.1)
+Flight Controller based on K20DX256 (Teensy 3.1), forked from cTn
 ------------------------------------------------
 
-PIN setup (Teensy 3.1 pin numbering)
+PIN setup [Teensy 3.1](https://www.pjrc.com/teensy/teensy31.html) pin numbering:
 ------------------------------------
   - I2C SCL 19
   - I2C SDA 18
   
-  - SUMD in (receiver) 0
+  - SUMD RX1 ( Receiver, 115kBaud ) 0
+  - Alternative PPM/PWM 3
   
+  - BT RX2 9
+  - BT TX2 10
+  
+  - GPS RX3 7
+  - GPS TX3 8
+ 
+  - Sonar 11
+  - Sonar 12
+  
+  - UMon 14
+  - UMon 15
+  
+  - LED Stripe White 2
+  - LED Stripe Red 4
+  - LED Stripe MultiColor 6 ? 
+  - LED Internal 13
+
   - Rotor 1 22
   - Rotor 2 23
-  - Rotor 3 9
-  - Rotor 4 10
-  - Rotor 5 6
-  - Rotor 6 20
-  - Rotor 7 21
-  - Rotor 8 5
-  
-  - Orientation lights / Armed-Disarmed indicator 14
+  - Rotor 3 20
+  - Rotor 4 21
   
   - Battery Monitor (current sensor) 17
   

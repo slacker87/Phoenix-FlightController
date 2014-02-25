@@ -483,6 +483,7 @@ void process10HzTask() {
     // Blink integrated arduino LED
     Arduino_LED_state = !Arduino_LED_state;
     digitalWrite(LED_ARDUINO, Arduino_LED_state);   
+    // LED-Stripe: Red(12V), White(12V), MultiColor(5V, Status, 1Hz?)
     
     // Reset Itterations
     itterations = 0;    
