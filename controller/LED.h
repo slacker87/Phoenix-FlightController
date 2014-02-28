@@ -25,7 +25,6 @@
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(LED_STATUS_COUNT, LED_STATUS, NEO_GRB + NEO_KHZ800);
 
 uint32_t LedStatus[5] = { RED, RED, RED, RED, RED };
-#endif
 
 
 // Fill the dots one after the other with a color
@@ -36,6 +35,7 @@ void colorWipe(uint32_t c, uint8_t wait) {
       delay(wait);
   }
 }
+#endif
 
 
 
@@ -61,8 +61,30 @@ void LED_Init( void )
 #endif
 }
 
+void LED_ON( void )
+{
+#ifdef LED_WHITE
+    digitalWrite(LED_WHITE, HIGH);
+#endif
+#ifdef LED_RED
+    digitalWrite(LED_RED, HIGH);
+#endif
+}
+
+void LED_OFF( void )
+{
+#ifdef LED_WHITE
+    digitalWrite(LED_WHITE, LOW);
+#endif
+#ifdef LED_RED
+    digitalWrite(LED_RED, LOW);
+#endif
+
+}
+
 void LED_50Hz( void )
 {
+/*
 #ifdef LED_WHITE
     // Blink "aircraft beacon" LED
     if ((Beacon_LED_state == 51) || (Beacon_LED_state == 59) || (Beacon_LED_state == 67)) {
@@ -77,7 +99,7 @@ void LED_50Hz( void )
         Beacon_LED_state = 0;
     }
 #endif
-
+*/
 }
 
 void LED_10Hz( void )
@@ -157,46 +179,22 @@ void LED_10Hz( void )
 #endif
 
 // LED-Stripe: Red(12V), White(12V)
-#ifdef LED_RED
-    // Armed/ Dis-armed indicator
     if (armed) {
-        digitalWrite(LED_RED, HIGH);
+        LED_ON();
     } else {
-        digitalWrite(LED_RED, LOW);
+        LED_OFF();
     }
-#endif
-#ifdef LED_WHITE
-    // Armed/ Dis-armed indicator
-    if (armed) {
-        digitalWrite(LED_WHITE, HIGH);
-    } else {
-        digitalWrite(LED_WHITE, LOW);
-    }
-#endif
-
 }
 
 void LED_1Hz( void )
 {
 // LED-Stripe: Red(12V), White(12V)
-#ifdef LED_RED
     // Armed/ Dis-armed indicator
     if (!armed) {
-        digitalWrite(LED_RED, HIGH);
+        LED_ON();
     } else {
-        digitalWrite(LED_RED, LOW);
+        LED_OFF();
     }
-#endif
-#ifdef LED_WHITE
-    // Armed/ Dis-armed indicator
-    if (!armed) {
-        digitalWrite(LED_WHITE, HIGH);
-    } else {
-        digitalWrite(LED_WHITE, LOW);
-    }
-#endif
-
-
 }
 
 #endif /* LED_H_ */

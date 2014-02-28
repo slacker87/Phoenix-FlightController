@@ -11,6 +11,7 @@
 // Arduino standard library imports
 #include <Arduino.h>
 #include <Wire.h>
+//#include <i2c_t3.h>	// improved wire replacement ...
 #include <EEPROM.h>
 
 // Custom imports
@@ -29,9 +30,9 @@
 #ifdef NO_SHIELD_V1
     // Led defines
     #define LED_WHITE 2
-    #define LED_RED 4
+    //#define LED_RED 4
     #define LED_ARDUINO 13
-	#define LED_STATUS 6
+    //#define LED_STATUS 6
 
     //#define DISPLAY_ITTERATIONS    
     // Features requested
@@ -242,21 +243,23 @@ void setup() {
 #endif
  
     // Join I2C bus as master
+/**/
     Wire.begin();
-
     // I2C bus hardware specific settings
 #if defined(__MK20DX128__)
     I2C0_F = 0x00; // 2.4 MHz (prescaler 20)
     I2C0_FLT = 4;
 #endif
 #if defined(__MK20DX256__)
-    I2C0_F = 0x00; // 2.4 MHz (prescaler 20)
+    //I2C0_F = 0x00; // 2.4 MHz (prescaler 20)
+    I2C0_F = 0x1A;	// 400kHz
     I2C0_FLT = 4;
 #endif
-    
 #if defined(__AVR__)
     TWBR = 12; // 400 KHz (maximum supported frequency)
 #endif
+/**/
+//    Wire.begin( I2C_MASTER, 0x00, I2C_PINS_18_19, I2C_PULLUP_EXT, I2C_RATE_800 ); // ..., I2C_RATE_600, I2C_RATE_800, I2C_RATE_1000, I2C_RATE_1200, I2C_RATE_1500, I2C_RATE_2000, I2C_RATE_2400
     
     // Read data from EEPROM to CONFIG union
     readEEPROM();
@@ -325,7 +328,7 @@ void loop() {
     currentTime = micros();
     
     // Read data (not faster then every 1 ms)
-    if (currentTime - sensorPreviousTime >= 1000) {		// needs typ 0.175ms (1.75ms with no __MK20DX256__ set)
+    if (currentTime - sensorPreviousTime >= 1000) {		// 2400kHz: 175us, 400kHz: 492us(560us), 100kHz: 1750us
         sensors.readGyroSum();
         sensors.readAccelSum();        
         
@@ -340,7 +343,7 @@ cntSensor++;
     }    
     
     // 100 Hz task loop (10 ms)
-    if (currentTime - previousTime > 10000) {		// needs typ 0.730ms (4ms with no __MK20DX256__ set)
+    if (currentTime - previousTime > 10000) {		// 2400kHz: 730us, 400kHz: 900us(950us), 100kHz: 4000us
         frameCounter++;
         
         process100HzTask();
@@ -492,9 +495,21 @@ void process1HzTask() {
     //Serial.print( " \t" );
     //Serial.println( meanMag );
 
-    //Serial.print( loopTimeSensor / cntSensor );
+    Serial.print( loopTimeSensor / cntSensor );
+    Serial.print( " \t" );
+    Serial.println( loopTimeTask / cntTask );
+
+    //Serial.print( gyro[XAXIS] );
     //Serial.print( " \t" );
-    //Serial.println( loopTimeTask / cntTask );
+    //Serial.print( gyro[YAXIS] );
+    //Serial.print( " \t" );
+    //Serial.println( gyro[ZAXIS] );
+
+    //Serial.print( accel[XAXIS] );
+    //Serial.print( " \t" );
+    //Serial.print( accel[YAXIS] );
+    //Serial.print( " \t" );
+    //Serial.println( accel[ZAXIS] );
 
     loopTimeSensor = loopTimeTask = 0;
     cntTask = cntSensor = 0;

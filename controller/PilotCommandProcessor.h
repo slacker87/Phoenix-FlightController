@@ -9,7 +9,7 @@
     in multiwii flight control software.
 */
 
-#define CMD_TO_RAD	0.0015	// +-500 to +-PI/4
+#define CMD_TO_RAD	0.001570796f	// +-500 to +-PI/4
 #define CMD_CENTER	1500
 #define CMD_MAX		2000
 #define CMD_MIN		1000
@@ -210,14 +210,16 @@ void vDisarm( void )
 
 void vInitGyro( void )
 {
-	digitalWrite(LED_ARDUINO, true);	// this will not write data to the eeprom
+	LED_ON();
 	sensors.initializeGyro();
+	LED_OFF();
 }
 
 void vCalibAcc( void )
 {
-	digitalWrite(LED_ARDUINO, true);	// this will not write data to the eeprom
+	LED_ON();
 	sensors.calibrateAccel();
+	LED_OFF();
 }
 
 void vTrimAcc( void )
@@ -226,6 +228,7 @@ void vTrimAcc( void )
 	// We jest enter trimming mode
 	static bool changed = false;
 
+	LED_ON();
 	// We will "lock" the user in here until trimming is done
 	while (TX_throttle > CMD_HIGH) {
 
@@ -246,14 +249,18 @@ void vTrimAcc( void )
 		// Check the sticks
 		if (TX_roll > CMD_HIGH) {
 			CONFIG.data.ACCEL_BIAS[YAXIS] += 5;
+			LED_OFF();
 		} else if (TX_roll < CMD_LOW) {
 			CONFIG.data.ACCEL_BIAS[YAXIS] -= 5;
+			LED_OFF();
 		}
 
 		if (TX_pitch > CMD_HIGH) {
 			CONFIG.data.ACCEL_BIAS[XAXIS] -= 5;
+			LED_OFF();
 		} else if (TX_pitch < CMD_LOW) {
 			CONFIG.data.ACCEL_BIAS[XAXIS] += 5;
+			LED_OFF();
 		}
 
 		// Save trimmed calibration values to EEPROM (if there were any changes in the values)
@@ -265,10 +272,9 @@ void vTrimAcc( void )
 		}
 
 		// Blink LED to indicate activity
-		Arduino_LED_state = !Arduino_LED_state;
-		digitalWrite(LED_ARDUINO, Arduino_LED_state);
-
-		delay(500); // 0.5s loop delay to allow precise trimming
+		delay(200); // 0.5s loop delay to allow precise trimming
+		LED_ON();
+		delay(400);
     }
 }
 
@@ -406,9 +412,11 @@ void processPilotCommands( void )
     	break;
     case PC_INIT_GYRO:
     	vInitGyro(); // blocking
+    	Serial.println( "vInitGyro()" );
     	break;
     case PC_TRIM_ACC:
     	vTrimAcc();	// blocking
+    	Serial.println( "vTrimAcc()" );
     	break;
     case PC_CALIB_ACC:
     	vCalibAcc();
@@ -451,13 +459,13 @@ void processPilotCommands( void )
     }
 
     // YAW angle build up over time
-    commandYawAttitude += (TX_yaw * CMD_TO_RAD) / 8; // division by 8 is used to slow down YAW build up
+    commandYawAttitude += ( float(TX_yaw) * CMD_TO_RAD) / 8; // division by 8 is used to slow down YAW build up
     NORMALIZE(commandYawAttitude); // +- PI
 
     // raw stick input
-    commandYaw   = TX_yaw   * CMD_TO_RAD;
-    commandRoll  = TX_roll  * CMD_TO_RAD;
-    commandPitch = TX_pitch * CMD_TO_RAD;
+    commandYaw   = float(TX_yaw)   * CMD_TO_RAD;
+    commandRoll  = float(TX_roll)  * CMD_TO_RAD;
+    commandPitch = float(TX_pitch) * CMD_TO_RAD;
     
     // Compute throttle according to altitude switch (pilot input/baro/sonar)
     if (altitudeHoldBaro == false && altitudeHoldSonar == false) {
