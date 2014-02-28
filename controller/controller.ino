@@ -29,8 +29,9 @@
 #ifdef NO_SHIELD_V1
     // Led defines
     #define LED_WHITE 2
-    //#define LED_BLUE 4
+    #define LED_RED 4
     #define LED_ARDUINO 13
+	#define LED_STATUS 6
 
     //#define DISPLAY_ITTERATIONS    
     // Features requested
@@ -39,8 +40,10 @@
     //#define BatteryMonitorCurrent
     //#define GPS
     //#define YawByMag
-    
-    // Critical sensors on board (gyro/accel)
+
+    #define ESC_400HZ
+
+	// Critical sensors on board (gyro/accel)
     //#include <mpu6050_6DOF_stick_px01.h>
     #include <mpu6050_10DOF_stick_px01.h>
     
@@ -66,14 +69,19 @@
     #include <FrameType_QuadX.h> 
 
     // Motor / ESC setup
-    #define ESC_400HZ
     #include <ESC_teensy3_HW2.h>     
+
+#ifdef LED_STATUS
+	#include <Adafruit_NeoPixel.h>
+#endif
+	#include "LED.h"
+
 #endif
 
 #ifdef PHOENIX_SHIELD_V_01
     // Led defines
     #define LED_WHITE 2
-    #define LED_BLUE 4
+    #define LED_RED 4
     #define LED_ARDUINO 13
     
     // Features requested
@@ -82,7 +90,7 @@
     #define BatteryMonitorCurrent
     #define GPS
     
-    // Critical sensors on board (gyro/accel)
+	// Critical sensors on board (gyro/accel)
     #include <mpu6050_10DOF_stick_px01.h>
     
     // Magnetometer
@@ -109,6 +117,9 @@
     // Motor / ESC setup
     #define ESC_400HZ
     #include <ESC_teensy3_HW.h>     
+
+	#include "LED.h"
+
 #endif
 
 #ifdef AQ_SHIELD_V_20
@@ -136,6 +147,9 @@
 
     // Motor / ESC setup
     #include <ESC_328p_HW.h> // this is just temporary, this shield requires proper mega 1280 2560 support      
+
+	#include "LED.h"
+
 #endif
 
 #ifdef AQ_SHIELD_V_21
@@ -145,7 +159,7 @@
     // Features requested
     #define Magnetometer
     
-    // Critical sensors on board (gyro/accel)
+	// Critical sensors on board (gyro/accel)
     #include <ITG3200_AQ_v21.h>
     #include <ADXL345_AQ_v21.h>
     
@@ -163,6 +177,9 @@
 
     // Motor / ESC setup
     #include <ESC_328p_HW.h> // this is just temporary, this shield requires proper mega 1280 2560 support     
+
+	#include "LED.h"
+
 #endif
 // == END of Hardware setup ==
 
@@ -214,16 +231,8 @@ void reset_PID_integrals() {
 #include "SerialCommunication.h"  
   
 void setup() {
-    // PIN settings
-    pinMode(LED_ARDUINO, OUTPUT);
-    
-#ifdef LED_WHITE
-    pinMode(LED_WHITE, OUTPUT);
-#endif
 
-#ifdef LED_BLUE
-    pinMode(LED_BLUE, OUTPUT);
-#endif
+	LED_Init();
 
     // Initialize serial communication
     Serial.begin(38400); // Virtual USB Serial on teensy 3.0 is always 12 Mbit/sec (can be initialized with baud rate 0)
@@ -440,20 +449,7 @@ void process50HzTask() {
     sensors.evaluateBaroAltitude();
 #endif   
 
-#ifdef LED_WHITE
-    // Blink "aircraft beacon" LED
-    if ((Beacon_LED_state == 51) || (Beacon_LED_state == 59) || (Beacon_LED_state == 67)) {
-        digitalWrite(LED_WHITE, HIGH);
-    } else {
-        digitalWrite(LED_WHITE, LOW);
-    }
-
-    Beacon_LED_state++;
-    
-    if (Beacon_LED_state >= 100) {
-        Beacon_LED_state = 0;
-    }
-#endif
+    LED_50Hz();
 }
 
 void process10HzTask() {
@@ -479,27 +475,16 @@ void process10HzTask() {
 #ifdef DISPLAY_ITTERATIONS
     Serial.println(itterations);
 #endif
-    
-    // Blink integrated arduino LED
-    Arduino_LED_state = !Arduino_LED_state;
-    digitalWrite(LED_ARDUINO, Arduino_LED_state);   
-    // LED-Stripe: Red(12V), White(12V), MultiColor(5V, Status, 1Hz?)
+
+    LED_10Hz();
     
     // Reset Itterations
     itterations = 0;    
 }
 
 void process1HzTask() {   
-#ifdef LED_BLUE
-    // Armed/ Dis-armed indicator
-    if (armed) {
-        digitalWrite(LED_BLUE, HIGH);
-    } else {
-        digitalWrite(LED_BLUE, LOW);
-    }
-#endif
+	LED_1Hz();
 
-    // A LED Stripe take 20 x 40us = 0.8ms time to update, no interrupts (only used by sonar)
 
     // Mag problem eg. 1.0 with stopped motors and 1.6 with full speed: +34 Degree ...
     // Linear, reproduceable, throttle correction?
