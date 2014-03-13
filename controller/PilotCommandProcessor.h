@@ -492,5 +492,7 @@ void processPilotCommands( void )
     }
 #endif
 
-    throttle = fThottleCorrection( throttle, kinematicsAngle[XAXIS], kinematicsAngle[YAXIS] );
+    // try to correct the height loss for angles different from 0, but the idea works only
+    // for low speed activity. With higher speed the height may increase rapidly.
+    //throttle = fThottleCorrection( throttle, kinematicsAngle[XAXIS], kinematicsAngle[YAXIS] );
 }    

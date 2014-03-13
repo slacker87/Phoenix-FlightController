@@ -23,6 +23,7 @@
 
 // == Hardware setup/s == 
 #define NO_SHIELD_V1
+//#define EASY_SHIELD_V1
 //#define PHOENIX_SHIELD_V_01
 //#define AQ_SHIELD_V_20
 //#define AQ_SHIELD_V_21
@@ -34,7 +35,7 @@
     #define LED_ARDUINO 13
     //#define LED_STATUS 6
 
-    //#define DISPLAY_ITTERATIONS    
+    //#define DISPLAY_ITTERATIONS
     // Features requested
     #define Magnetometer
     #define AltitudeHoldBaro
@@ -47,30 +48,82 @@
 	// Critical sensors on board (gyro/accel)
     //#include <mpu6050_6DOF_stick_px01.h>
     #include <mpu6050_10DOF_stick_px01.h>
-    
+
     // Magnetometer
     #include <Magnetometer_HMC5883L.h>
-    
+
     // Barometer
     #include <Barometer_ms5611.h>
-    
+
     // GPS (ublox neo 6m)
     //#include <GPS_ublox.h>
-    
+
     // Current sensor
     //#include <BatteryMonitor_current.h>
-    
+
     // Kinematics used
     #include <kinematics_CMP.h>
-    
+
     // Receiver
     #include <Receiver_teensy3_HW_SUMD.h>
-    
+
     // Frame type definition
-    #include <FrameType_QuadX.h> 
+    #include <FrameType_QuadX.h>
 
     // Motor / ESC setup
-    #include <ESC_teensy3_HW2.h>     
+    #include <ESC_teensy3_HW2.h>
+
+#ifdef LED_STATUS
+	#include <Adafruit_NeoPixel.h>
+#endif
+	#include "LED.h"
+
+#endif
+
+#ifdef EASY_SHIELD_V1
+    // Led defines
+    #define LED_WHITE 2
+    #define LED_RED 4
+    #define LED_ARDUINO 13
+    #define LED_STATUS 6
+
+    //#define DISPLAY_ITTERATIONS
+    // Features requested
+    #define Magnetometer
+    #define AltitudeHoldBaro
+    //#define BatteryMonitorCurrent
+    #define GPS
+    //#define YawByMag
+
+    #define ESC_400HZ
+
+	// Critical sensors on board (gyro/accel)
+    //#include <mpu6050_6DOF_stick_px01.h>
+    #include <mpu6050_10DOF_stick_px01.h>
+
+    // Magnetometer
+    #include <Magnetometer_HMC5883L.h>
+
+    // Barometer
+    #include <Barometer_ms5611.h>
+
+    // GPS (ublox neo 6m)
+    #include <GPS_ublox.h>
+
+    // Current sensor
+    //#include <BatteryMonitor_current.h>
+
+    // Kinematics used
+    #include <kinematics_CMP.h>
+
+    // Receiver
+    #include <Receiver_teensy3_HW_SUMD.h>
+
+    // Frame type definition
+    #include <FrameType_QuadX.h>
+
+    // Motor / ESC setup
+    #include <ESC_teensy3_HW2.h>
 
 #ifdef LED_STATUS
 	#include <Adafruit_NeoPixel.h>
@@ -84,40 +137,40 @@
     #define LED_WHITE 2
     #define LED_RED 4
     #define LED_ARDUINO 13
-    
+
     // Features requested
     #define Magnetometer
     #define AltitudeHoldBaro
     #define BatteryMonitorCurrent
     #define GPS
-    
+
 	// Critical sensors on board (gyro/accel)
     #include <mpu6050_10DOF_stick_px01.h>
-    
+
     // Magnetometer
     #include <Magnetometer_HMC5883L.h>
-    
+
     // Barometer
     #include <Barometer_ms5611.h>
-    
+
     // GPS (ublox neo 6m)
     #include <GPS_ublox.h>
-    
+
     // Current sensor
     #include <BatteryMonitor_current.h>
-    
+
     // Kinematics used
     #include <kinematics_CMP.h>
-    
+
     // Receiver
     #include <Receiver_teensy3_HW_PPM.h>
-    
+
     // Frame type definition
-    #include <FrameType_QuadX.h> 
+    #include <FrameType_QuadX.h>
 
     // Motor / ESC setup
     #define ESC_400HZ
-    #include <ESC_teensy3_HW.h>     
+    #include <ESC_teensy3_HW.h>
 
 	#include "LED.h"
 
@@ -126,28 +179,28 @@
 #ifdef AQ_SHIELD_V_20
     // Led defines
     #define LED_ARDUINO 13
-    
+
     // Features requested
     #define Magnetometer
-    
+
     // Critical sensors on board (gyro/accel)
     #include <ITG3200_AQ_v20.h>
     #include <BMA180_AQ_v20.h>
-    
+
     // Magnetometer
     #include <Magnetometer_HMC5883L.h>
-    
+
     // Kinematics used
     #include <kinematics_CMP.h>
-    
+
     // Receiver
     #include <Receiver_328p_HW_PPM.h> // this is just temporary, this shield requires proper mega 1280 2560 support
-    
+
     // Frame type definition
-    #include <FrameType_QuadX.h> 
+    #include <FrameType_QuadX.h>
 
     // Motor / ESC setup
-    #include <ESC_328p_HW.h> // this is just temporary, this shield requires proper mega 1280 2560 support      
+    #include <ESC_328p_HW.h> // this is just temporary, this shield requires proper mega 1280 2560 support
 
 	#include "LED.h"
 
@@ -156,33 +209,34 @@
 #ifdef AQ_SHIELD_V_21
     // Led defines
     #define LED_ARDUINO 13
-    
+
     // Features requested
     #define Magnetometer
-    
+
 	// Critical sensors on board (gyro/accel)
     #include <ITG3200_AQ_v21.h>
     #include <ADXL345_AQ_v21.h>
-    
+
     // Magnetometer
     #include <Magnetometer_HMC5883L.h>
-    
+
     // Kinematics used
     #include <kinematics_CMP.h>
-    
+
     // Receiver
     #include <Receiver_328p_HW_PPM.h> // this is just temporary, this shield requires proper mega 1280 2560 support
-    
+
     // Frame type definition
-    #include <FrameType_QuadX.h> 
+    #include <FrameType_QuadX.h>
 
     // Motor / ESC setup
-    #include <ESC_328p_HW.h> // this is just temporary, this shield requires proper mega 1280 2560 support     
+    #include <ESC_328p_HW.h> // this is just temporary, this shield requires proper mega 1280 2560 support
 
 	#include "LED.h"
 
 #endif
 // == END of Hardware setup ==
+
 
 // Global PID object definitions
 PID yaw_command_pid;

@@ -127,14 +127,14 @@ void LED_10Hz( void )
     	update++;
     }
     // Gyro
-    status = strip.Color( uint8_t(gyro[XAXIS] * 10 + 128), uint8_t(gyro[YAXIS] * 10 + 128), uint8_t(gyro[ZAXIS] * 10 + 128) );
+    status = GREEN; //strip.Color( uint8_t(gyro[XAXIS] * 10 + 128), uint8_t(gyro[YAXIS] * 10 + 128), uint8_t(gyro[ZAXIS] * 10 + 128) );
     if( LedStatus[1] != status )
     {
     	LedStatus[1] = status;
     	update++;
     }
     // ACC
-    status = strip.Color( uint8_t(accel[XAXIS] * 200 + 128), uint8_t(accel[YAXIS] * 200 + 128), uint8_t(accel[ZAXIS] * 200 + 128) );
+    status = GREEN; //strip.Color( uint8_t(accel[XAXIS] * 200 + 128), uint8_t(accel[YAXIS] * 200 + 128), uint8_t(accel[ZAXIS] * 200 + 128) );
     if( LedStatus[2] != status )
     {
     	LedStatus[2] = status;
