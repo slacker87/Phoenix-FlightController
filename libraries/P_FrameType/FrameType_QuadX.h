@@ -27,7 +27,7 @@ void updateMotorsMix() {
     YawMotorSpeed = constrain(YawMotorSpeed, -200, 200);
     
     // reduce throttle to make room for controller corrections
-    throttlebuffer = Abs(PitchMotorSpeed) + Abs(RollMotorSpeed) + Abs(YawMotorSpeed);
+    throttlebuffer = abs(PitchMotorSpeed) + abs(RollMotorSpeed) + abs(YawMotorSpeed);
     if( (throttle + throttlebuffer) > 2000 ){
     	throttle = 2000 - throttlebuffer;
     	}
