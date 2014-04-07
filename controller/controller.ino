@@ -37,8 +37,8 @@
 
     //#define DISPLAY_ITTERATIONS
     // Features requested
-    #define Magnetometer
-    #define AltitudeHoldBaro
+    //#define Magnetometer
+    //#define AltitudeHoldBaro
     //#define BatteryMonitorCurrent
     //#define GPS
     //#define YawByMag
@@ -50,10 +50,10 @@
     #include <mpu6050_10DOF_stick_px01.h>
 
     // Magnetometer
-    #include <Magnetometer_HMC5883L.h>
+    //#include <Magnetometer_HMC5883L.h>
 
     // Barometer
-    #include <Barometer_ms5611.h>
+    //#include <Barometer_ms5611.h>
 
     // GPS (ublox neo 6m)
     //#include <GPS_ublox.h>
@@ -549,9 +549,9 @@ void process1HzTask() {
     //Serial.print( " \t" );
     //Serial.println( meanMag );
 
-    Serial.print( loopTimeSensor / cntSensor );
-    Serial.print( " \t" );
-    Serial.println( loopTimeTask / cntTask );
+    //Serial.print( loopTimeSensor / cntSensor );
+    //Serial.print( " \t" );
+    //Serial.println( loopTimeTask / cntTask );
 
     //Serial.print( gyro[XAXIS] );
     //Serial.print( " \t" );
