@@ -85,7 +85,7 @@ $(document).ready(function() {
                 chrome.serial.disconnect(connectionId, onClosed);
                 
                 clearTimeout(connection_delay);
-//                clearInterval(serial_poll);
+                clearInterval(serial_poll);
                 clearInterval(port_usage_poll);
                 // Disable any active "data pulling" timer
                 disable_timers();
