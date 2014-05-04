@@ -45,11 +45,13 @@ class PID {
     	    if( delta_time > 0.0 )
     	    {
     	    	derivative = (*PID_input - last_PID_input) / delta_time; // wrong - derivative must be 0 for const input
+    	    	//derivative = ( -error - last_PID_input) / delta_time; // derivative pay respect to setpoint changes
     	    }
             
             *PID_output = (*Kp * error) + (*Ki * integral) + (*Kd * derivative);
             
             last_PID_input = *PID_input;
+            //last_PID_input = -error;
             last_time = now;
         };
         

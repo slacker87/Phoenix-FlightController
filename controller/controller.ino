@@ -42,6 +42,7 @@
     //#define BatteryMonitorCurrent
     //#define GPS
     //#define YawByMag
+	//#define ACC_AUTO_CALIBRATION
 
     #define ESC_400HZ
 
@@ -540,7 +541,10 @@ void process10HzTask() {
 }
 
 void process1HzTask() {   
-	LED_1Hz();
+	float tmpd;
+	static int16_t iseconds=0;
+	float accelScaleFactor = 9.81 / 8192.0;
+	int16_t signal = 1;
 
 
     // Mag problem eg. 1.0 with stopped motors and 1.6 with full speed: +34 Degree ...
@@ -564,6 +568,54 @@ void process1HzTask() {
     //Serial.print( accel[YAXIS] );
     //Serial.print( " \t" );
     //Serial.println( accel[ZAXIS] );
+
+	//tmpd = (commandAux + 1.0 ) * 0.5;
+	//tmpd = -1.0 * tmpd * 10.0;	// set D via AUX_2 from 0 .. -10
+	//CONFIG.data.PID_PITCH_m[D] = tmpd;
+	//CONFIG.data.PID_ROLL_m[D] = tmpd;
+
+	//tmpd = (commandAux + 1.0 ) * 0.5;
+	//tmpd = tmpd * 200.0;	// set D via AUX_2 from 0 .. 200
+	//CONFIG.data.PID_PITCH_m[P] = tmpd;
+	//CONFIG.data.PID_ROLL_m[P] = tmpd;
+
+	//Serial.print( " \t" );
+    //Serial.println( tmpd );
+/*
+    Serial.print( gyro[XAXIS] );
+    Serial.print( " \t" );
+    Serial.print( RollCommandPIDSpeed );
+    Serial.print( " \t" );
+    Serial.println( RollMotorSpeed );
+*/
+
+	// Experiments for automatic calibration
+	// ToDo: enable by tx? Move to mpu6050 code. Uncomment and test ZAXIS.
+#ifdef ACC_AUTO_CALIBRATION
+	if( TX_stick_moved )
+	{
+		iseconds = 0;
+	}
+	else if( iseconds >= 3 )
+	{
+	    tmpd = ( accel[XAXIS] / accelScaleFactor ) - (float)CONFIG.data.ACCEL_BIAS[XAXIS];	// remove the old bias
+	    CONFIG.data.ACCEL_BIAS[XAXIS] = (int16_t)(-tmpd);				                 	// use the raw acc as new bias
+	    tmpd = ( accel[YAXIS] / accelScaleFactor ) - (float)CONFIG.data.ACCEL_BIAS[YAXIS];
+	    CONFIG.data.ACCEL_BIAS[YAXIS] = (int16_t)(-tmpd);
+	    //tmpd = accel[ZAXIS]/accelScaleFactor - CONFIG.data.ACCEL_BIAS[ZAXIS];
+	    //CONFIG.data.ACCEL_BIAS[ZAXIS] = (int16_t)(-tmpd) + 8192; // +1g
+
+	    iseconds = 0;
+	    signal = 0;
+	}
+	else
+	{
+		iseconds++;
+	}
+	TX_stick_moved=0;
+#endif
+
+	if( signal )LED_1Hz();
 
     loopTimeSensor = loopTimeTask = 0;
     cntTask = cntSensor = 0;

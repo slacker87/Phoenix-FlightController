@@ -50,7 +50,7 @@ uint8_t Beacon_LED_state = 0;
 float kinematicsAngle[3];
 
 // FlightController commands definitions
-float commandYaw, commandYawAttitude, commandPitch, commandRoll, commandThrottle;
+float commandYaw, commandYawAttitude, commandPitch, commandRoll, commandThrottle, commandAux;
 
 // Heading related variables
 float headingError = 0.0;
@@ -72,4 +72,5 @@ uint32_t loopTimeSensor = 0;
 uint32_t loopTimeTask = 0;
 uint32_t cntSensor=0;
 uint32_t cntTask=0;
+
 float meanMag;

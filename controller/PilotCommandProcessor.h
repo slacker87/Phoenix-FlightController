@@ -20,9 +20,10 @@
 
 int16_t TX_roll, TX_pitch, TX_throttle, TX_yaw, TX_AUX1, TX_AUX2, TX_AUX3, TX_AUX4;
 int16_t TX_AUX5, TX_AUX6, TX_AUX7, TX_AUX8, TX_AUX9, TX_AUX10, TX_AUX11, TX_AUX12;
+int16_t TX_last_roll, TX_last_pitch, TX_stick_moved;
 uint64_t AUX_chan_mask;
 bool throttlePanic = false;
-typedef enum { PC_NONE, PC_ARM, PC_DISARM, PC_INIT_GYRO, PC_TRIM_ACC, PC_CALIB_ACC } PilotCommand_t;
+typedef enum { PC_NONE, PC_ARM, PC_DISARM, PC_INIT_GYRO, PC_TRIM_ACC, PC_INIT_ACC } PilotCommand_t;
 
 void vGetRxData( void )
 {
@@ -171,17 +172,18 @@ PilotCommand_t getPilotCommand( void )
 	    {
 	    	pc = PC_ARM;
 	    }
-	    else if (TX_throttle > CMD_HIGH && TX_yaw < CMD_LOW)
+	    else if (TX_throttle > CMD_HIGH && TX_yaw > CMD_HIGH)
 	    {
 	    	pc = PC_TRIM_ACC;
 	    }
-	    else if (TX_throttle > CMD_HIGH && TX_yaw > CMD_HIGH)
+	    else if (TX_throttle < 1100 && TX_yaw < CMD_LOW && TX_pitch < CMD_LOW )
 	    {
 	    	pc = PC_INIT_GYRO;
 	    }
-
-	    // there is still no cmd for
-	    // pc = PC_CALIB_ACC;
+	    else if (TX_throttle > CMD_HIGH && TX_yaw < CMD_LOW && TX_pitch < CMD_LOW )
+	    {
+	    	pc = PC_INIT_ACC;
+	    }
 
 	}
 	return pc;
@@ -264,7 +266,8 @@ void vTrimAcc( void )
 		}
 
 		// Save trimmed calibration values to EEPROM (if there were any changes in the values)
-		if (TX_yaw > CMD_HIGH && changed) { // Rudder = RIGHT
+		//if (TX_yaw > CMD_HIGH && changed) { // Rudder = RIGHT
+		if (TX_yaw < CMD_LOW && changed) { // Rudder = LEFT
 			writeEEPROM();
 
 			// reset flag
@@ -418,8 +421,9 @@ void processPilotCommands( void )
     	vTrimAcc();	// blocking
     	Serial.println( "vTrimAcc()" );
     	break;
-    case PC_CALIB_ACC:
-    	vCalibAcc();
+    case PC_INIT_ACC:
+    	vCalibAcc(); // blocking
+    	Serial.println( "vCalibAcc()" );
     	break;
 
     case PC_NONE:
@@ -466,7 +470,19 @@ void processPilotCommands( void )
     commandYaw   = float(TX_yaw)   * CMD_TO_RAD;
     commandRoll  = float(TX_roll)  * CMD_TO_RAD;
     commandPitch = float(TX_pitch) * CMD_TO_RAD;
+    commandAux   = float(TX_AUX2 - CMD_CENTER) / 500.0;
     
+    // detect movement in stabilization control (roll/pitch)
+    int16_t TX_diff = TX_last_roll - TX_roll;
+    if( (TX_diff < -2) || (TX_diff > 2) ) TX_stick_moved=1;
+    TX_diff = TX_last_pitch - TX_pitch;
+    if( (TX_diff < -2) || (TX_diff > 2) ) TX_stick_moved=1;
+    if( TX_throttle < 1400 ) TX_stick_moved=1;
+    if( armed == false ) TX_stick_moved=1;
+    // if failsafe TX_stick_moved=1;
+    TX_last_roll = TX_roll;
+    TX_last_pitch = TX_pitch;
+
     // Compute throttle according to altitude switch (pilot input/baro/sonar)
     if (altitudeHoldBaro == false && altitudeHoldSonar == false) {
         throttle = TX_throttle;

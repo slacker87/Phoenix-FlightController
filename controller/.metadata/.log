@@ -1,0 +1,101 @@
+!SESSION 2014-05-02 15:36:18.015 -----------------------------------------------
+eclipse.buildId=debbuild
+java.version=1.7.0_55
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=de_DE
+Command-line arguments:  -os linux -ws gtk -arch x86_64
+
+!ENTRY org.eclipse.equinox.p2.operations 4 0 2014-05-02 15:39:57.365
+!MESSAGE Operation details
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.365
+!MESSAGE Cannot complete the install because of a conflicting dependency.
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE Software being installed: C/C++ GNU Toolchain Build Support 8.0.0.201106081058 (org.eclipse.cdt.gnu.build.feature.group 8.0.0.201106081058)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE Software being installed: C/C++ Development Tools SDK 8.0.2.201202111925 (org.eclipse.cdt.sdk.feature.group 8.0.2.201202111925)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.365
+!MESSAGE Only one of the following can be installed at once: 
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE GNU Managed Build Definitions 8.0.0.201106081058 (org.eclipse.cdt.managedbuilder.gnu.ui 8.0.0.201106081058)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE GNU Managed Build Definitions 8.0.1.201109151620 (org.eclipse.cdt.managedbuilder.gnu.ui 8.0.1.201109151620)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE GNU Managed Build Definitions 8.0.2.201211091924 (org.eclipse.cdt.managedbuilder.gnu.ui 8.0.2.201211091924)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE GNU Managed Build Definitions 8.0.2.201202111925 (org.eclipse.cdt.managedbuilder.gnu.ui 8.0.2.201202111925)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.365
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE From: C/C++ Development Tools 8.0.2.201202111925 (org.eclipse.cdt.feature.group 8.0.2.201202111925)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE To: org.eclipse.cdt.gnu.build.feature.group [8.0.2.201202111925]
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.365
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE From: C/C++ GNU Toolchain Build Support 8.0.0.201106081058 (org.eclipse.cdt.gnu.build.feature.group 8.0.0.201106081058)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE To: org.eclipse.cdt.managedbuilder.gnu.ui [8.0.0.201106081058]
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.365
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE From: C/C++ GNU Toolchain Build Support 8.0.2.201202111925 (org.eclipse.cdt.gnu.build.feature.group 8.0.2.201202111925)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE To: org.eclipse.cdt.managedbuilder.gnu.ui [8.0.2.201202111925]
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.365
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.365
+!MESSAGE From: C/C++ Development Tools SDK 8.0.2.201202111925 (org.eclipse.cdt.sdk.feature.group 8.0.2.201202111925)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.366
+!MESSAGE To: org.eclipse.cdt.feature.group [8.0.2.201202111925]
+
+!ENTRY org.eclipse.equinox.p2.operations 4 0 2014-05-02 15:39:57.370
+!MESSAGE Operation details
+!SUBENTRY 1 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.370
+!MESSAGE Cannot complete the install because of a conflicting dependency.
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE Software being installed: C/C++ GNU Toolchain Build Support 8.0.0.201106081058 (org.eclipse.cdt.gnu.build.feature.group 8.0.0.201106081058)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE Software being installed: C/C++ Development Tools SDK 8.0.2.201202111925 (org.eclipse.cdt.sdk.feature.group 8.0.2.201202111925)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.370
+!MESSAGE Only one of the following can be installed at once: 
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE GNU Managed Build Definitions 8.0.0.201106081058 (org.eclipse.cdt.managedbuilder.gnu.ui 8.0.0.201106081058)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE GNU Managed Build Definitions 8.0.1.201109151620 (org.eclipse.cdt.managedbuilder.gnu.ui 8.0.1.201109151620)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE GNU Managed Build Definitions 8.0.2.201211091924 (org.eclipse.cdt.managedbuilder.gnu.ui 8.0.2.201211091924)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE GNU Managed Build Definitions 8.0.2.201202111925 (org.eclipse.cdt.managedbuilder.gnu.ui 8.0.2.201202111925)
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.370
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE From: C/C++ Development Tools 8.0.2.201202111925 (org.eclipse.cdt.feature.group 8.0.2.201202111925)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE To: org.eclipse.cdt.gnu.build.feature.group [8.0.2.201202111925]
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.370
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE From: C/C++ GNU Toolchain Build Support 8.0.0.201106081058 (org.eclipse.cdt.gnu.build.feature.group 8.0.0.201106081058)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE To: org.eclipse.cdt.managedbuilder.gnu.ui [8.0.0.201106081058]
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.370
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE From: C/C++ GNU Toolchain Build Support 8.0.2.201202111925 (org.eclipse.cdt.gnu.build.feature.group 8.0.2.201202111925)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.370
+!MESSAGE To: org.eclipse.cdt.managedbuilder.gnu.ui [8.0.2.201202111925]
+!SUBENTRY 2 org.eclipse.equinox.p2.director 4 1 2014-05-02 15:39:57.370
+!MESSAGE Cannot satisfy dependency:
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.371
+!MESSAGE From: C/C++ Development Tools SDK 8.0.2.201202111925 (org.eclipse.cdt.sdk.feature.group 8.0.2.201202111925)
+!SUBENTRY 3 org.eclipse.equinox.p2.director 4 0 2014-05-02 15:39:57.371
+!MESSAGE To: org.eclipse.cdt.feature.group [8.0.2.201202111925]
+!SESSION 2014-05-02 15:42:32.861 -----------------------------------------------
+eclipse.buildId=debbuild
+java.version=1.7.0_55
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=de_DE
+Command-line arguments:  -os linux -ws gtk -arch x86_64
+
+!ENTRY org.eclipse.cdt.core 1 0 2014-05-02 15:45:15.851
+!MESSAGE Indexed 'phoenix' (0 sources, 67 headers) in 0,72 sec: 1.448 declarations; 1.774 references; 3 unresolved inclusions; 0 syntax errors; 2 unresolved names (0,06 %)

@@ -59,6 +59,6 @@ Accelerometer offset trimming via TX
   - While in dis-armed state
   - To enter the trimming mode = Throttle stick UP & Rudder RIGHT
   - To adjust the values = PITCH UP & DOWN || ROLL LEFT & RIGHT
-  - To save the values in EEPROM = Throttle UP & Rudder LEFT 
+  - To save the values in EEPROM = Throttle UP & Rudder RIGHT 
     - (you dont have to save the values right away, you can test them, then return back to trimming mode and save them)
   - To leave trimming mode = Throttle stick DOWN
