@@ -319,6 +319,8 @@ void setup() {
     // Read data from EEPROM to CONFIG union
     readEEPROM();
     
+    vInitPitchRollExpoRate( 65, 90 );
+
     // Initialize PID objects with data from EEPROM
     yaw_command_pid = PID(&headingError, &YawCommandPIDSpeed, &headingSetpoint, (float*) &CONFIG.data.PID_YAW_c);
     pitch_command_pid = PID(&kinematicsAngle[YAXIS], &PitchCommandPIDSpeed, &commandPitch, (float*) &CONFIG.data.PID_PITCH_c);
@@ -473,7 +475,7 @@ void process100HzTask() {
         // Stick input, * 4.0 is the rotation speed factor
         YawCommandPIDSpeed = commandYaw * 4.0;
         PitchCommandPIDSpeed = commandPitch * 4.0;
-        RollCommandPIDSpeed = commandRoll * 4.0;        
+        RollCommandPIDSpeed = commandRoll * 4.0;
     }   
     
     // Compute motor PIDs (rate-based)    
@@ -511,8 +513,10 @@ void process50HzTask() {
 }
 
 void process10HzTask() {
+
     // Trigger RX failsafe function every 100ms
     RX_failSafe();
+    if(failsafeEnabled) armed = false; //ToDo: change this !!!
     
 #ifdef AltitudeHoldSonar
     // Request sonar reading
@@ -589,8 +593,13 @@ void process1HzTask() {
     Serial.println( RollMotorSpeed );
 */
 
+#if defined(__MK20DX256__)
+//	Serial.println( "MK20DX256" );
+#endif
+
 	// Experiments for automatic calibration
 	// ToDo: enable by tx? Move to mpu6050 code. Uncomment and test ZAXIS.
+
 #ifdef ACC_AUTO_CALIBRATION
 	if( TX_stick_moved )
 	{

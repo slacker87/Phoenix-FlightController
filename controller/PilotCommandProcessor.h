@@ -22,6 +22,8 @@ int16_t TX_roll, TX_pitch, TX_throttle, TX_yaw, TX_AUX1, TX_AUX2, TX_AUX3, TX_AU
 int16_t TX_AUX5, TX_AUX6, TX_AUX7, TX_AUX8, TX_AUX9, TX_AUX10, TX_AUX11, TX_AUX12;
 int16_t TX_last_roll, TX_last_pitch, TX_stick_moved;
 uint64_t AUX_chan_mask;
+static int16_t lookupPitchRollRC[6];// lookup table for expo & RC rate PITCH+ROLL
+
 bool throttlePanic = false;
 typedef enum { PC_NONE, PC_ARM, PC_DISARM, PC_INIT_GYRO, PC_TRIM_ACC, PC_INIT_ACC } PilotCommand_t;
 
@@ -400,6 +402,27 @@ float fThottleCorrection( float t, float a, float b )
     return t;
 }
 
+void vInitPitchRollExpoRate( uint8_t expo, uint8_t rate )
+{
+	// defaults for rate = 90 and expo = 65
+	  for( int i=0;i<6;i++) {
+	    lookupPitchRollRC[i] = (2500+expo*(i*i-25))*i*(int32_t)rate/2500;
+	  }
+
+}
+
+int16_t ui16PitchRollExpo( int16_t value )	// like multiwii
+{
+	int16_t tmp, tmp2, result;
+	tmp = value;
+	if( tmp < 0 ) tmp = -tmp;
+	tmp2 = tmp / 100;
+	if( tmp2 > 5 ) tmp2 = 5;
+	result = lookupPitchRollRC[tmp2] + (tmp-tmp2*100) * (lookupPitchRollRC[tmp2+1]-lookupPitchRollRC[tmp2]) / 100;
+	if( value < 0 ) result = -result;
+	return result;
+}
+
 
 void processPilotCommands( void )
 {
@@ -415,15 +438,15 @@ void processPilotCommands( void )
     	break;
     case PC_INIT_GYRO:
     	vInitGyro(); // blocking
-    	Serial.println( "vInitGyro()" );
+    	//Serial.println( "vInitGyro()" );
     	break;
     case PC_TRIM_ACC:
     	vTrimAcc();	// blocking
-    	Serial.println( "vTrimAcc()" );
+    	//Serial.println( "vTrimAcc()" );
     	break;
     case PC_INIT_ACC:
     	vCalibAcc(); // blocking
-    	Serial.println( "vCalibAcc()" );
+    	//Serial.println( "vCalibAcc()" );
     	break;
 
     case PC_NONE:
@@ -465,6 +488,10 @@ void processPilotCommands( void )
     // YAW angle build up over time
     commandYawAttitude += ( float(TX_yaw) * CMD_TO_RAD) / 8; // division by 8 is used to slow down YAW build up
     NORMALIZE(commandYawAttitude); // +- PI
+
+    // expo for roll and pitch
+    TX_roll = ui16PitchRollExpo( TX_roll );
+    TX_pitch = ui16PitchRollExpo( TX_pitch );
 
     // raw stick input
     commandYaw   = float(TX_yaw)   * CMD_TO_RAD;

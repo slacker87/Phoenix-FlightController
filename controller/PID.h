@@ -14,6 +14,9 @@
     
     Pointer arithmetic used to parse terms into PID controller @http://www.cs.umd.edu/class/sum2003/cmsc311/Notes/BitOp/pointer.html
 */
+
+#define deriv_tau 7.9577e-3f
+
 class PID {
     public:
         // Constructor
@@ -23,6 +26,9 @@ class PID {
         PID(float* Input, float* Output, float* Setpoint, float* terms) {
             integral = 0.0;
             last_PID_input = 0.0;
+            last_error = 0.0;
+            last_derivative = 0.0;
+
 
             PID_input = Input;
             PID_output = Output;
@@ -36,23 +42,48 @@ class PID {
         };
         
         void Compute() {       
-            float derivative = 0.0;
-            unsigned long now = micros();
-            float delta_time = (now - last_time) / 1000000.0;
-            float error = *PID_setpoint - *PID_input;
-            integral = constrain(integral + error * delta_time, -*windupGuard, *windupGuard);
+            float derivative;
+            unsigned long now;
+            float delta_time;
+            float error;
+            float diff;
 
-    	    if( delta_time > 0.0 )
-    	    {
-    	    	derivative = (*PID_input - last_PID_input) / delta_time; // wrong - derivative must be 0 for const input
-    	    	//derivative = ( -error - last_PID_input) / delta_time; // derivative pay respect to setpoint changes
-    	    }
-            
-            *PID_output = (*Kp * error) + (*Ki * integral) + (*Kd * derivative);
-            
-            last_PID_input = *PID_input;
-            //last_PID_input = -error;
+            error = *PID_setpoint - *PID_input;
+
+            now = micros();
+            delta_time = constrain( (now - last_time) / 1000000.0, 0.002, 0.050 );
             last_time = now;
+
+            if( *Ki )
+            {
+            	integral = constrain(integral + error * delta_time, -*windupGuard, *windupGuard);
+            }
+            else
+            {
+            	integral = 0.0;
+            }
+
+    	    if( *Kd )
+    	    {
+    	    	diff = -(error - last_error); // for compatibility to negative Kd
+    	    	// diff = (*PID_input - last_PID_input);
+    	    	//derivative = *Kd * diff / delta_time;
+    	    	//derivative = *Kd * ( (*PID_input) - (last_PID_input) ) / delta_time;
+
+    	    	// dt1 taulabs
+    	    	derivative = last_derivative +  delta_time / ( delta_time + deriv_tau) * (( *Kd * diff / delta_time) - last_derivative);
+    	                                                               //   ^ set constant to 1/(2*pi*f_cutoff)
+    	    		                                                   //   7.9577e-3  means 20 Hz f_cutoff
+    	    }
+    	    else
+    	    {
+    	    	derivative = 0.0;
+    	    }
+            last_PID_input = *PID_input;
+            last_error = error;
+            last_derivative = derivative;
+            
+            *PID_output = (*Kp * error) + (*Ki * integral) + (derivative);
         };
         
         void IntegralReset() {
@@ -69,5 +100,9 @@ class PID {
         
         float integral;
         float last_PID_input;
+        float last_error;
+        float last_derivative;
         unsigned long last_time;
+
+
 }; 
