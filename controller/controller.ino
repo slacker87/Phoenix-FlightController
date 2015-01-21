@@ -22,13 +22,6 @@
 #include "dataStorage.h"
 
 // == Hardware setup/s == 
-#define NO_SHIELD_V1
-//#define EASY_SHIELD_V1
-//#define PHOENIX_SHIELD_V_01
-//#define AQ_SHIELD_V_20
-//#define AQ_SHIELD_V_21
-
-#ifdef NO_SHIELD_V1
     // Led defines
     #define LED_WHITE 2
     //#define LED_RED 4
@@ -36,13 +29,18 @@
     //#define LED_STATUS 6
 
     //#define DISPLAY_ITTERATIONS
+    #define DISPLAY_GYRO
+    #define DISPLAY_ACCEL
+    #define DISPLAY_MAG
+    //#define ReceiverEnabled
     // Features requested
-    //#define Magnetometer
-    //#define AltitudeHoldBaro
+    //#define Bluetooth
+    #define Magnetometer
+    #define AltitudeHoldBaro
     //#define BatteryMonitorCurrent
     //#define GPS
-    //#define YawByMag
-	//#define ACC_AUTO_CALIBRATION
+    #define YawByMag
+    //#define ACC_AUTO_CALIBRATION
 
     #define ESC_400HZ
 
@@ -51,10 +49,10 @@
     #include <mpu6050_10DOF_stick_px01.h>
 
     // Magnetometer
-    //#include <Magnetometer_HMC5883L.h>
+    #include <Magnetometer_HMC5883L.h>
 
     // Barometer
-    //#include <Barometer_ms5611.h>
+    #include <Barometer_ms5611.h>
 
     // GPS (ublox neo 6m)
     //#include <GPS_ublox.h>
@@ -65,8 +63,11 @@
     // Kinematics used
     #include <kinematics_CMP.h>
 
-    // Receiver
-    #include <Receiver_teensy3_HW_SUMD.h>
+    #ifdef ReceiverEnabled
+      // Receiver
+      #include <Receiver_teensy3_HW_SUMD.h>
+    #endif
+    
 
     // Frame type definition
     #include <FrameType_QuadX.h>
@@ -78,165 +79,6 @@
 	#include <Adafruit_NeoPixel.h>
 #endif
 	#include "LED.h"
-
-#endif
-
-#ifdef EASY_SHIELD_V1
-    // Led defines
-    #define LED_WHITE 2
-    #define LED_RED 4
-    #define LED_ARDUINO 13
-    #define LED_STATUS 6
-
-    //#define DISPLAY_ITTERATIONS
-    // Features requested
-    #define Magnetometer
-    #define AltitudeHoldBaro
-    //#define BatteryMonitorCurrent
-    #define GPS
-    //#define YawByMag
-
-    #define ESC_400HZ
-
-	// Critical sensors on board (gyro/accel)
-    //#include <mpu6050_6DOF_stick_px01.h>
-    #include <mpu6050_10DOF_stick_px01.h>
-
-    // Magnetometer
-    #include <Magnetometer_HMC5883L.h>
-
-    // Barometer
-    #include <Barometer_ms5611.h>
-
-    // GPS (ublox neo 6m)
-    #include <GPS_ublox.h>
-
-    // Current sensor
-    //#include <BatteryMonitor_current.h>
-
-    // Kinematics used
-    #include <kinematics_CMP.h>
-
-    // Receiver
-    #include <Receiver_teensy3_HW_SUMD.h>
-
-    // Frame type definition
-    #include <FrameType_QuadX.h>
-
-    // Motor / ESC setup
-    #include <ESC_teensy3_HW2.h>
-
-#ifdef LED_STATUS
-	#include <Adafruit_NeoPixel.h>
-#endif
-	#include "LED.h"
-
-#endif
-
-#ifdef PHOENIX_SHIELD_V_01
-    // Led defines
-    #define LED_WHITE 2
-    #define LED_RED 4
-    #define LED_ARDUINO 13
-
-    // Features requested
-    #define Magnetometer
-    #define AltitudeHoldBaro
-    #define BatteryMonitorCurrent
-    #define GPS
-
-	// Critical sensors on board (gyro/accel)
-    #include <mpu6050_10DOF_stick_px01.h>
-
-    // Magnetometer
-    #include <Magnetometer_HMC5883L.h>
-
-    // Barometer
-    #include <Barometer_ms5611.h>
-
-    // GPS (ublox neo 6m)
-    #include <GPS_ublox.h>
-
-    // Current sensor
-    #include <BatteryMonitor_current.h>
-
-    // Kinematics used
-    #include <kinematics_CMP.h>
-
-    // Receiver
-    #include <Receiver_teensy3_HW_PPM.h>
-
-    // Frame type definition
-    #include <FrameType_QuadX.h>
-
-    // Motor / ESC setup
-    #define ESC_400HZ
-    #include <ESC_teensy3_HW.h>
-
-	#include "LED.h"
-
-#endif
-
-#ifdef AQ_SHIELD_V_20
-    // Led defines
-    #define LED_ARDUINO 13
-
-    // Features requested
-    #define Magnetometer
-
-    // Critical sensors on board (gyro/accel)
-    #include <ITG3200_AQ_v20.h>
-    #include <BMA180_AQ_v20.h>
-
-    // Magnetometer
-    #include <Magnetometer_HMC5883L.h>
-
-    // Kinematics used
-    #include <kinematics_CMP.h>
-
-    // Receiver
-    #include <Receiver_328p_HW_PPM.h> // this is just temporary, this shield requires proper mega 1280 2560 support
-
-    // Frame type definition
-    #include <FrameType_QuadX.h>
-
-    // Motor / ESC setup
-    #include <ESC_328p_HW.h> // this is just temporary, this shield requires proper mega 1280 2560 support
-
-	#include "LED.h"
-
-#endif
-
-#ifdef AQ_SHIELD_V_21
-    // Led defines
-    #define LED_ARDUINO 13
-
-    // Features requested
-    #define Magnetometer
-
-	// Critical sensors on board (gyro/accel)
-    #include <ITG3200_AQ_v21.h>
-    #include <ADXL345_AQ_v21.h>
-
-    // Magnetometer
-    #include <Magnetometer_HMC5883L.h>
-
-    // Kinematics used
-    #include <kinematics_CMP.h>
-
-    // Receiver
-    #include <Receiver_328p_HW_PPM.h> // this is just temporary, this shield requires proper mega 1280 2560 support
-
-    // Frame type definition
-    #include <FrameType_QuadX.h>
-
-    // Motor / ESC setup
-    #include <ESC_328p_HW.h> // this is just temporary, this shield requires proper mega 1280 2560 support
-
-	#include "LED.h"
-
-#endif
-// == END of Hardware setup ==
 
 
 // Global PID object definitions
@@ -283,7 +125,11 @@ void reset_PID_integrals() {
   
 // Include this last as it contains objects from previous declarations
 #include "GPS.h"
-#include "PilotCommandProcessor.h"
+
+#ifdef ReceiverEnabled
+  #include "PilotCommandProcessor.h"
+#endif
+
 #include "SerialCommunication.h"  
   
 void setup() {
@@ -319,7 +165,9 @@ void setup() {
     // Read data from EEPROM to CONFIG union
     readEEPROM();
     
+#ifdef ReceiverEnabled
     vInitPitchRollExpoRate( 65, 90 );
+#endif
 
     // Initialize PID objects with data from EEPROM
     yaw_command_pid = PID(&headingError, &YawCommandPIDSpeed, &headingSetpoint, (float*) &CONFIG.data.PID_YAW_c);
@@ -346,7 +194,10 @@ void setup() {
     
     // Initialize motors/receivers/sensors
     initializeESC();    
+    
+#ifdef ReceiverEnabled
     initializeReceiver();
+#endif
     
     sensors.initializeGyro();
     sensors.initializeAccel();
@@ -483,6 +334,7 @@ void process100HzTask() {
     pitch_motor_pid.Compute();
     roll_motor_pid.Compute();     
     
+    #ifdef ReceiverEnabled
     // This is the place where the actual "force" gets applied
     if (armed) {
         if (TX_throttle >= CONFIG.data.minimumArmedThrottle) { // disable stabilization if throttle is very low
@@ -495,6 +347,7 @@ void process100HzTask() {
         }
         updateMotors(); // Update ESCs
     } 
+    #endif
 }
 
 void process50HzTask() {
@@ -503,7 +356,9 @@ void process50HzTask() {
     ReceiverReadPacket(); // dab 2014-02-01: non interrupt controlled receiver reading  
 #endif
 
+#ifdef ReceiverEnabled
     processPilotCommands();
+#endif
     
 #ifdef AltitudeHoldBaro
     sensors.evaluateBaroAltitude();
@@ -514,9 +369,11 @@ void process50HzTask() {
 
 void process10HzTask() {
 
+#ifdef ReceiverEnabled
     // Trigger RX failsafe function every 100ms
     RX_failSafe();
     if(failsafeEnabled) armed = false; //ToDo: change this !!!
+#endif    
     
 #ifdef AltitudeHoldSonar
     // Request sonar reading
@@ -535,7 +392,10 @@ void process10HzTask() {
     
     // Print itterations per 100ms
 #ifdef DISPLAY_ITTERATIONS
-    Serial.println(itterations);
+    Serial.println("");
+    Serial.println("Itterations this cycle: ");
+    Serial.print(itterations);
+    Serial.println("");
 #endif
 
     LED_10Hz();
@@ -553,26 +413,46 @@ void process1HzTask() {
 
     // Mag problem eg. 1.0 with stopped motors and 1.6 with full speed: +34 Degree ...
     // Linear, reproduceable, throttle correction?
-    //Serial.print( magHeadingAbsolute );
-    //Serial.print( " \t" );
-    //Serial.println( meanMag );
+    
+#ifdef DISPLAY_MAG
+    Serial.println("");
+    Serial.println("Magnometer reading: ");
+    Serial.print("Absolute heading: ");
+    Serial.print( magHeadingAbsolute );
+    Serial.print(", Mean readings: " );
+    Serial.print( meanMag );
+    Serial.println("");
+#endif
 
     //Serial.print( loopTimeSensor / cntSensor );
     //Serial.print( " \t" );
     //Serial.println( loopTimeTask / cntTask );
 
-    //Serial.print( gyro[XAXIS] );
-    //Serial.print( " \t" );
-    //Serial.print( gyro[YAXIS] );
-    //Serial.print( " \t" );
-    //Serial.println( gyro[ZAXIS] );
+#ifdef DISPLAY_GYRO
+    Serial.println("");
+    Serial.println("Gyro reading: ");
+    Serial.print("X Axis: ");
+    Serial.print( gyro[XAXIS] );
+    Serial.print( ", Y Axis: " );
+    Serial.print( gyro[YAXIS] );
+    Serial.print( ", Z Axis: " );
+    Serial.print( gyro[ZAXIS] );
+    Serial.println("");
+#endif
+#ifdef DISPLAY_ACCEL
+    Serial.println("");
+    Serial.println("Accelerometer reading: ");
+    Serial.print("X Axis: ");
+    Serial.print( accel[XAXIS] );
+    Serial.print( ", Y Axis: " );
+    Serial.print( accel[YAXIS] );
+    Serial.print( ", Z Axis: " );
+    Serial.print( accel[ZAXIS] );
+    Serial.println("");
+#endif
 
-    //Serial.print( accel[XAXIS] );
-    //Serial.print( " \t" );
-    //Serial.print( accel[YAXIS] );
-    //Serial.print( " \t" );
-    //Serial.println( accel[ZAXIS] );
-
+    Serial.println("");
+    Serial.println("---------------");
 	//tmpd = (commandAux + 1.0 ) * 0.5;
 	//tmpd = -1.0 * tmpd * 10.0;	// set D via AUX_2 from 0 .. -10
 	//CONFIG.data.PID_PITCH_m[D] = tmpd;

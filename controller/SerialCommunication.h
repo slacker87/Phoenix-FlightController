@@ -173,6 +173,7 @@ class Configurator {
                     serialize_uint8(gpsData.sats);
                     break;
 #endif                    
+#ifdef ReceiverEnabled
                 case PSP_REQ_RC:
                     protocol_head(PSP_REQ_RC, RX_CHANNELS * 2);
                     
@@ -180,6 +181,7 @@ class Configurator {
                         serialize_uint16(RX[channel]);
                     }
                     break;
+#endif
                 case PSP_REQ_KINEMATICS:
                     protocol_head(PSP_REQ_KINEMATICS, 12);
 
@@ -204,11 +206,12 @@ class Configurator {
                     
                     serialize_uint16(sensors.sensors_detected);
                     break;
+#ifdef ReceiverEnabled
                 case PSP_REQ_AUX_TRIGGERED:
                     protocol_head(PSP_REQ_AUX_TRIGGERED, 8);
-                    
                     serialize_uint64(AUX_chan_mask);
                     break;
+#endif
                  
                 // SET
                 case PSP_SET_CONFIGURATION:
